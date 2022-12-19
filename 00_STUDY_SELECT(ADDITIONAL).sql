@@ -218,12 +218,14 @@ ORDER BY
 표시핚다.)
 */
 
+-- 내 답안
 SELECT
-    NVL(SUBSTR(TERM_NO, 1, 4), ' ') 년도,
+    NVL(SUBSTR(TERM_NO, 1, 4),
+        ' ') 년도,
     NVL(SUBSTR(TERM_NO, 5, 2),
-        ' ')              학기,
+        ' ') 학기,
     ROUND(AVG(POINT),
-          1)              평점
+          1) 평점
 FROM
     TB_GRADE
 WHERE
@@ -231,9 +233,25 @@ WHERE
 GROUP BY
     CUBE(SUBSTR(TERM_NO, 1, 4),
          SUBSTR(TERM_NO, 5, 2))
-HAVING
-    (SUBSTR(TERM_NO, 1, 4) IS NULL AND SUBSTR(TERM_NO, 5, 2) IS NULL)
-    OR SUBSTR(TERM_NO, 1, 4) IS NOT NULL
+HAVING ( SUBSTR(TERM_NO, 1, 4) IS NULL
+         AND SUBSTR(TERM_NO, 5, 2) IS NULL )
+       OR SUBSTR(TERM_NO, 1, 4) IS NOT NULL
 ORDER BY
     SUBSTR(TERM_NO, 1, 4),
     SUBSTR(TERM_NO, 5, 2);
+    
+-- 답안
+SELECT
+    SUBSTR(TERM_NO, 1, 4) AS 년도,
+    SUBSTR(TERM_NO, 5, 2) AS 학기,
+    ROUND(AVG(POINT),
+          1)              AS 평점
+FROM
+    TB_GRADE
+WHERE
+    STUDENT_NO = 'A112113'
+GROUP BY
+    ROLLUP(SUBSTR(TERM_NO, 1, 4),
+           SUBSTR(TERM_NO, 5, 2))
+ORDER BY
+    SUBSTR(TERM_NO, 1, 4);
