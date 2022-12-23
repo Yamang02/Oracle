@@ -307,11 +307,12 @@ ORDER BY
 -- 직원들에 대해 사번, 이름, 부서 코드, 구분(사수/사원)
 -- 사수 사번 가져오기 중복 제외(201, 204, 100, 200, 211, 207, 214)
 SELECT DISTINCT
-    MANAGER_ID
+    *
 FROM
-    EMPLOYEE
+    EMPLOYEE E
+    JOIN EMPLOYEE M ON (E.MANAGER_ID = M.EMP_ID)
 WHERE
-    MANAGER_ID IS NOT NULL;
+    E.MANAGER_ID IS NOT NULL;
 -- 사수 사번
 
 SELECT
@@ -380,7 +381,20 @@ ORDER BY
    
    
 -- DECODE    
+SELECT
+    EMP_ID    "사번",
+    EMP_NAME  "이름",
+    DEPT_CODE "부서 코드",
+    DECODE(EMP_ID , , '사수', '사원' ) 
+FROM
+    EMPLOYEE
+ORDER BY
+    EMP_ID;
 
+
+SELECT MANAGER_ID
+FROM EMPLOYEE
+WHERE MANAGER_ID IS NULL;
     
     
 -- 대리 직급임에도 과장 직급의 최소 급여보다 급여가 많은 사원의 사번, 이름, 직급, 급여 조회
