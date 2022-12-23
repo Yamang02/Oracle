@@ -263,7 +263,7 @@ SQL 오류: ORA-42399: cannot perform a DML operation on a read-only view
 
 -- 최종 개설학기 계산 , 3년 전 학기 계산------------------------------------------------
 SELECT
-    MAX(TERM_NO) - 300
+    MAX(TERM_NO) - 200
 FROM
     (
         SELECT
@@ -314,9 +314,9 @@ FROM
                     수강인원 DESC
             )
         WHERE
-            TERM_NO >= (
+            TERM_NO > (
                 SELECT
-                    MAX(TERM_NO) - 300
+                    MAX(TERM_NO) - 200
                 FROM
                     (
                         SELECT
@@ -369,9 +369,9 @@ FROM
                             수강인원 DESC
                     )
                 WHERE
-                    TERM_NO >= (
+                    TERM_NO > (
                         SELECT
-                            MAX(TERM_NO) - 300
+                            MAX(TERM_NO) - 200
                         FROM
                             (
                                 SELECT
@@ -567,5 +567,70 @@ ORDER BY
     COUNT(*) DESC;
     
 ----------------------------------------------------------------------------------    
+
+
+SELECT
+    V.과목번호,
+    V.과목이름,
+    V."누적수강생수(명)"
+FROM
+    (
+        SELECT
+            C.CLASS_NO   과목번호,
+            C.CLASS_NAME 과목이름,
+            COUNT(*)     "누적수강생수(명)"
+        FROM
+                 TB_CLASS C
+            JOIN TB_GRADE G ON ( C.CLASS_NO = G.CLASS_NO )
+        WHERE
+            SUBSTR(G.TERM_NO, 1, 4) IN ( '2007', '2008', '2009' )
+        GROUP BY
+            C.CLASS_NO,
+            C.CLASS_NAME
+        ORDER BY
+            3 DESC
+    ) V
+WHERE
+    ROWNUM < 4;    
     
-    
+----------------------------------------------------------------------------------
+
+SELECT
+    V.과목번호,
+    V.과목이름,
+    V."누적수강생수(명)"
+FROM
+    (
+        SELECT
+            C.CLASS_NO   과목번호,
+            C.CLASS_NAME 과목이름,
+            COUNT(*)     "누적수강생수(명)"
+        FROM
+                 TB_CLASS C
+            JOIN TB_GRADE G ON ( C.CLASS_NO = G.CLASS_NO )
+        WHERE
+            TERM_NO > 200703
+        GROUP BY
+            C.CLASS_NO,
+            C.CLASS_NAME
+        ORDER BY
+            3 DESC
+    ) V
+WHERE
+    ROWNUM < 4;      
+ 
+ ---------------------------------------------------------------------------------
+
+SELECT
+    TERM_NO,
+    CLASS_NO,
+    COUNT(*) AS "수강인원"
+FROM
+    TB_GRADE GR
+WHERE
+    TERM_NO >= 200703
+GROUP BY
+    TERM_NO,
+    CLASS_NO
+ORDER BY
+    수강인원 DESC;
