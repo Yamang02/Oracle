@@ -161,7 +161,28 @@ WHERE
     AND G.TERM_NO = 200501
     AND C.CLASS_NAME = '피부생리학';
 
--- table을 join해서 하는 법 없나??
+-- table을 join해서 하는 법 없나?? Updatable Join View ??
+
+CREATE VIEW V_D AS
+SELECT
+    POINT
+FROM
+         TB_GRADE G
+    JOIN TB_CLASS      C ON ( G.CLASS_NO = C.CLASS_NO )
+    JOIN TB_STUDENT    S ON ( G.STUDENT_NO = S.STUDENT_NO )
+    JOIN TB_DEPARTMENT D ON ( S.DEPARTMENT_NO = S.DEPARTMENT_NO )
+WHERE
+        S.STUDENT_NAME = '김명훈'
+    AND D.DEPARTMENT_NAME = '의학과'
+    AND G.TERM_NO = 200501
+    AND C.CLASS_NAME = '피부생리학';
+
+-- ORA-01779: cannot modify a column which maps to a non key-preserved table
+UPDATE V_D 
+SET POINT = 1.5;
+
+DROP VIEW V_D;
+
 
 UPDATE TB_GRADE
 SET
