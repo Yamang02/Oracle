@@ -1209,14 +1209,72 @@ FROM
 
 -- EMPLOYEE 테이블에서 부서가 배치된 사원의 수를 조회
 
-SELECT COUNT(DEPT_CODE)
-FROM EMPLOYEE;
+SELECT
+    COUNT(DEPT_CODE)
+FROM
+    EMPLOYEE;
 
 -- EMPLOYEE 테이블에서 현재 사원들이 속해있는 부서의 수를 조회
-SELECT COUNT (DISTINCT DEPT_CODE)
-FROM EMPLOYEE;
+SELECT
+    COUNT(DISTINCT DEPT_CODE)
+FROM
+    EMPLOYEE;
 
 -- EMPLOYEE 테이블에서 현재 사원들이 분포되어 있는 직급의 수를 조회
-SELECT COUNT( DISTINCT JOB_CODE)
-FROM EMPLOYEE;
+SELECT
+    COUNT(DISTINCT JOB_CODE)
+FROM
+    EMPLOYEE;
 
+
+/*
+    2. 반복문
+        
+    2-1) BASIC LOOP
+
+*/
+
+-- 1 ~ 5까지 순차적으로 1씩 증가하는 값을 출력
+
+DECLARE
+    NUM NUMBER := 1;
+BEGIN
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(NUM);
+        NUM := NUM + 1;
+--        IF NUM > 5 THEN
+--            EXIT;
+--        END IF;
+
+
+        EXIT WHEN NUM > 5;
+    END LOOP;
+END;
+/
+
+
+--  2-2) WHILE LOOP
+
+DECLARE
+    NUM NUMBER := 1;
+BEGIN
+    WHILE NUM <= 5 LOOP
+        DBMS_OUTPUT.PUT_LINE(NUM);
+        NUM := NUM + 1;
+    END LOOP;
+END;
+/
+
+DECLARE
+    DAN NUMBER := 2;
+    NUM NUMBER := 1;
+BEGIN
+    WHILE DAN < 9 LOOP
+        WHILE NUM < 9 LOOP
+            DBMS_OUTPUT.PUT_LINE(DAN);
+            NUM := NUM + 1;
+        END LOOP;
+        DAN := DAN + 1;
+    END LOOP;
+END;
+/
