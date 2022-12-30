@@ -30,7 +30,7 @@ INSERT INTO EMPLOYEE (
 
 -- 2. 행 트리거
 -- EMPLOYEE 테이블에 UPDATE 수행 후 '업데이트 실행' 메시지를 자동으로 출력
--- :OLD : 수정, 삭제 전 데이터에 접근 간으
+-- :OLD : 수정, 삭제 전 데이터에 접근 가능
 -- :NEW : 입력, 수정 후 데이터에 접근 가능
 
 CREATE OR REPLACE TRIGGER TRG_02 AFTER
@@ -234,6 +234,7 @@ BEGIN
             PCODE = :NEW.PCODE;
 
     END IF;
+
 END;
 /
 -- 트리거에서는 COMMIT을 포함한 TCL구문을 쓸 수 없다. -> 트리거가 되는 INSERT 까지 커밋되어버리기 때문이다. 
@@ -251,7 +252,13 @@ INSERT INTO TB_PRODETAIL VALUES (
 
 
 -- 2번 상품이 '22/12/25' 날짜로 5개 출고
-INSERT INTO TB_PRODETAIL VALUES(SEQ_DCODE.NEXTVAL, 2, '출고', 5, '22/12/25');
+INSERT INTO TB_PRODETAIL VALUES (
+    SEQ_DCODE.NEXTVAL,
+    2,
+    '출고',
+    5,
+    '22/12/25'
+);
 
 
 -- 3번 상품이 '22/12/29' 날짜로 100개 입고
@@ -263,10 +270,17 @@ TABLE TB_PRODETAIL (
     AMOUNT NUMBER,          -- 수량
     DDATE  DATE DEFAULT SYSDATE, -- 상품 입/출고 일자   
     */
-    
-INSERT INTO TB_PRODETAIL VALUES(SEQ_DCODE.NEXTVAL, 3, '입고', 100, '22/12/29');
+
+INSERT INTO TB_PRODETAIL VALUES (
+    SEQ_DCODE.NEXTVAL,
+    3,
+    '입고',
+    100,
+    '22/12/29'
+);
 
 COMMIT;
+
 ROLLBACK;
 
 SELECT
@@ -278,15 +292,37 @@ SELECT
     *
 FROM
     TB_PRODETAIL;
-    
 
-CREATE TRIGGER TRG_TEST BEFORE INSERT ON TB_PRODUCT
+DROP TRIGGER TRG_TEST;
+
+CREATE OR REPLACE TRIGGER TRG_TEST BEFORE
+    INSERT ON TB_PRODETAIL
 BEGIN
+    DBMS_OUTPUT.PUT_LINE('BEFORE 트리거 롤백 테스트');
+    UPDATE EMPLOYEE
+    SET
+        EMP_NAME = '성동일'
+    WHERE
+        EMP_ID = '200';
+
 END;
 /
 
+UPDATE EMPLOYEE
+SET
+    EMP_NAME = '성동일'
+WHERE
+    EMP_ID = '200';
 
-    
-    
-    
-    
+INSERT INTO TB_PRODETAIL VALUES (
+    SEQ_DCODE.NEXTVAL,
+    3,
+    '입고',
+    1,
+    '22/12/29'
+);
+
+ROLLBACK;
+COMMIT;
+
+DROP TRIGGER TRG_02;
